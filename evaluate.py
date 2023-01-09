@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 def evaluate(model, X, y, labels = [0,1]):
 
     metrics = [accuracy_score, precision_score, recall_score, f1_score]
-    metric_name = ['Accuracy', 'Precision', 'Recall', 'F1']
+    metric_name = ['accuracy', 'precision', 'recall', 'f1']
 
     y_pred = model.predict(X)
     assert y_pred.shape[1] == 2, "Model predication shape shall be (batch_size, 2)."

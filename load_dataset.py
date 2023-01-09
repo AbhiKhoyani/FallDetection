@@ -36,7 +36,7 @@ def SMOTE_oversampling(X, y):
     return X, y
 
 def load_dataset(ms, smote):
-  artifact = wandb.use_artifact('abhi_khoyani/Fall Detection/split_data:v0', type='split_data')
+  artifact = wandb.use_artifact('abhi_khoyani/Fall-Detection/split_data:v0', type='split_data')
   table = artifact.get('split_data')
 
   # split into train-test-val split as per "Stage" column 

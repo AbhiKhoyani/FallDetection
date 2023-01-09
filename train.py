@@ -13,6 +13,7 @@ from models import MLP, CNN, Transformer
 from evaluate import evaluate
 
 default_config = SimpleNamespace(
+    project_name = 'Fall-Detection',
     model = 'Transformer',
     mlp_units = [1024,512,256,64,32,16],
     mlp_dropout = 0.3,
@@ -36,6 +37,7 @@ default_config = SimpleNamespace(
 def parse_args():
     "Overriding default arguments"
     argparser = argparse.ArgumentParser(description='Process hyper-parameters')
+    argparser.add_argument("--project_name", type=str, default = default_config.project_name, help='Project name to log data in W&B.')
     argparser.add_argument('--ms', action='store_true', help='Use this to enable Mu-Sigma augmentation')
     argparser.add_argument('--smote', action='store_true', help='Use this to enable SMOTE Oversampling')
     argparser.add_argument('--model', type=str, default = default_config.model, choices=['MLP','CNN','Transformer'],\
@@ -75,7 +77,7 @@ def train(config):
     os.environ['WANDB_API_KEY'] = "66eab73e48530bb4c50b2a1b04abaed644303514"
     os.environ['WANDB_ENTITY']= "abhi_khoyani"
 
-    run = wandb.init(project = 'Fall Detection', job_type='training', config = config)
+    run = wandb.init(project = config.project_name, job_type='training', config = config)
     reproducibility()
 
     X_train, y_train, X_val, y_val, X_test, y_test = load_dataset(config.ms, config.smote)
@@ -97,7 +99,7 @@ def train(config):
 
     updateLr = tf.keras.callbacks.ReduceLROnPlateau(monitor = 'val_loss', factor = 0.001, patience = 25,
                                                     verbose = 1, min_delta = 0.001, min_lr = 1e-6 )
-    callbacks = [WandbCallback(), updateLr, ]
+    callbacks = [WandbCallback(save_model = False), updateLr, ]
 
     if config.earlyStop:
         callbacks.append(tf.keras.callbacks.EarlyStopping(patience=100, restore_best_weights=True))

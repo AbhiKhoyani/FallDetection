@@ -1,0 +1,102 @@
+# The program to run
+program: train.py
+
+# Method can be grid, random or bayes
+method: random
+
+# Project this sweep is part of
+project: FD_mlp
+
+# Metric to optimize
+metric:
+  name: val_loss
+  goal: minimize
+
+
+# Parameters space to search
+parameters:
+  lr:
+    distribution: log_uniform_values
+    min: 0.00005
+    max: 0.002
+  epochs:
+    value: 100
+  # ff_dim:
+  #   distribution: int_uniform
+  #   min: 1
+  #   max: 4
+  # dropout:
+  #   distribution: uniform
+  #   min: 0.15
+  #   max: 0.6
+  # head_size:
+  #   distribution: int_uniform
+  #   min: 48
+  #   max: 192
+  # num_heads:
+  #   distribution: int_uniform
+  #   min: 2
+  #   max: 8
+  # batch_size:
+  #   distribution: int_uniform
+  #   min: 8
+  #   max: 32
+  mlp_dropout:
+    distribution: uniform
+    min: 0.15
+    max: 0.6
+  mlp_units:
+    values:
+      - [1024,512,256,64,32,16]
+      - [1024,512,64,16]
+      - [1024,256,32]
+      - [2048,1024,512,256,64,32,16]
+      - [2048,512,256,32,16]
+  # num_transformer_blocks:
+  #   distribution: int_uniform
+  #   min: 1
+  #   max: 4
+  ms:
+    distribution: categorical
+    values:
+      - "true"
+      - "false"
+  smote:
+    distribution: categorical
+    values:
+      - "true"
+      - "false"
+  # earlyStop:
+  #   distribution: categorical
+  #   values:
+  #     - "true"
+  #     - "false"
+  # tx_blocks:
+  #   distribution: int_uniform
+  #   min: 1
+  #   max: 4
+  # tx_ffDims:
+  #   distribution: int_uniform
+  #   min: 1
+  #   max: 4
+  # tx_noHeads:
+  #   distribution: int_uniform
+  #   min: 2
+  #   max: 8
+  # cnn_dropout:
+  #   distribution: uniform
+  #   min: 0.15
+  #   max: 0.6
+  # cnn_pooling:
+  #   distribution: categorical
+  #   values:
+  #     - "true"
+  #     - "false"
+  # tx_headSize:
+  #   distribution: int_uniform
+  #   min: 128
+  #   max: 512
+  # tx_mlp_dropout:
+  #   distribution: uniform
+  #   min: 0.1
+  #   max: 0.4
