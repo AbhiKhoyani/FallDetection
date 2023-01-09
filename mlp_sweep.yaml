@@ -5,22 +5,28 @@ program: train.py
 method: random
 
 # Project this sweep is part of
-project: FD_mlp
+project: &project 'FD_MLP'
+entity: abhi_khoyani
 
 # Metric to optimize
 metric:
   name: val_loss
   goal: minimize
 
+early_terminate:
+  type: hyperband
+  min_iter: 420
 
 # Parameters space to search
 parameters:
+  project_name:
+    value: *project
   lr:
     distribution: log_uniform_values
     min: 0.00005
     max: 0.002
   epochs:
-    value: 100
+    value: 50
   # ff_dim:
   #   distribution: int_uniform
   #   min: 1

@@ -34,12 +34,17 @@ default_config = SimpleNamespace(
     lr = 1e-3,
 )
 
+def t_or_f(arg):
+    ua = str(arg).upper()
+    if 'TRUE'.startswith(ua): return True
+    else: return False
+
 def parse_args():
     "Overriding default arguments"
     argparser = argparse.ArgumentParser(description='Process hyper-parameters')
     argparser.add_argument("--project_name", type=str, default = default_config.project_name, help='Project name to log data in W&B.')
-    argparser.add_argument('--ms', action='store_true', help='Use this to enable Mu-Sigma augmentation')
-    argparser.add_argument('--smote', action='store_true', help='Use this to enable SMOTE Oversampling')
+    argparser.add_argument('--ms', type=t_or_f, help='Use this to enable Mu-Sigma augmentation')
+    argparser.add_argument('--smote', type=t_or_f, help='Use this to enable SMOTE Oversampling')
     argparser.add_argument('--model', type=str, default = default_config.model, choices=['MLP','CNN','Transformer'],\
                                                     help="Choice of model out of three:['MLP','CNN','Transformer']")
     
@@ -52,7 +57,7 @@ def parse_args():
     argparser.add_argument('--cnn_kernels', type=list, default = default_config.cnn_kernels, help="number of nodes in CNN per layer, eg: [1,2,3,4]")
     argparser.add_argument('--cnn_strides', type=list, default = default_config.cnn_strides, help="number of nodes in CNN per layer, eg: [1,2,3,4]")
     argparser.add_argument('--cnn_dropout', type=float, default = default_config.cnn_dropout, help="Dropout factor")
-    argparser.add_argument('--cnn_pooling', action='store_false', default = default_config.cnn_pooling, help='Use this to disable MaxPoolingLayer in CNN')
+    argparser.add_argument('--cnn_pooling', type=t_or_f, default = default_config.cnn_pooling, help='Use this to disable MaxPoolingLayer in CNN')
 
     #Transformer related arguments
     argparser.add_argument('--tx_headSize', type=int, default = default_config.tx_headSize, help="Head Size in Tx MultiHeadAttention layer")
@@ -67,7 +72,7 @@ def parse_args():
     argparser.add_argument('--batch_size', type=int, default=default_config.batch_size, help='batch size')
     argparser.add_argument('--epochs', type=int, default=default_config.epochs, help='number of training epochs')
     argparser.add_argument('--lr', type=float, default=default_config.lr, help='learning rate')
-    argparser.add_argument('--earlyStop', action='store_true', help='Use this to enable Early stopping')
+    argparser.add_argument('--earlyStop', type=t_or_f, help='Use this to enable Early stopping')
     
     args = argparser.parse_args()
     vars(default_config).update(vars(args))
