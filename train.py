@@ -94,13 +94,15 @@ def train(config):
     model = None
     if config.model == 'Transformer':
         print('Loading Transformer model.')
-        model = Transformer(3000)       #3000 is number of features
+        model = Transformer(3000, config.tx_headSize, config.tx_noHeads,
+                            config.tx_ffDims, config.tx_blocks, config.tx_mlp, 
+                            config.tx_dropout, config.tx_mlp_dropout)       #3000 is number of features
     elif config.model == 'CNN':
         print('Loading CNN model.')
-        model = CNN()
+        model = CNN(config.cnn_units, config.cnn_kernels, config.cnn_strides, config.cnn_pooling, config.cnn_dropout)
     elif config.model == 'MLP':
         print('Loading MLP model.')
-        model = MLP()
+        model = MLP(config.mlp_units, config.mlp_dropout)
 
     updateLr = tf.keras.callbacks.ReduceLROnPlateau(monitor = 'val_loss', factor = 0.001, patience = 25,
                                                     verbose = 1, min_delta = 0.001, min_lr = 1e-6 )
