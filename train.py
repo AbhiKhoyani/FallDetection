@@ -15,7 +15,8 @@ from evaluate import evaluate
 default_config = SimpleNamespace(
     project_name = 'Fall-Detection',
     model = 'Transformer',
-    mlp_units = [1024,512,256,64,32,16],
+    # mlp_units = [1024,512,256,64,32,16],
+    mlp_units = "1024,64,32,16",
     mlp_dropout = 0.3,
     cnn_units = [300,200,100],
     cnn_kernels = [9,7,5],
@@ -39,6 +40,9 @@ def t_or_f(arg):
     if 'TRUE'.startswith(ua): return True
     else: return False
 
+def parse_list(arg):
+    return [int(item) for item in arg.split(',')]
+
 def parse_args():
     "Overriding default arguments"
     argparser = argparse.ArgumentParser(description='Process hyper-parameters')
@@ -49,7 +53,7 @@ def parse_args():
                                                     help="Choice of model out of three:['MLP','CNN','Transformer']")
     
     # MLP related arguments
-    argparser.add_argument('--mlp_units', type=list, default = default_config.mlp_units,help="number of nodes in MLP per layer, eg: [1,2,3,4]")
+    argparser.add_argument('--mlp_units', type=parse_list, default = default_config.mlp_units,help="number of nodes in MLP per layer, eg: [1,2,3,4]")
     argparser.add_argument('--mlp_dropout', type=float, default = default_config.mlp_dropout, help="Dropout factor")
 
     #CNN related arguments
@@ -79,6 +83,8 @@ def parse_args():
     return
 
 def train(config):
+
+    print(config.mlp_units, type(config.mlp_units))
     os.environ['WANDB_API_KEY'] = "66eab73e48530bb4c50b2a1b04abaed644303514"
     os.environ['WANDB_ENTITY']= "abhi_khoyani"
 
