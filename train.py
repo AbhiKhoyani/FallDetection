@@ -4,6 +4,7 @@ import argparse
 import numpy as np
 import tensorflow as tf
 
+from packaging import version
 from sklearn.utils import class_weight
 from wandb.keras import WandbCallback
 from types import SimpleNamespace
@@ -116,14 +117,18 @@ def train(config):
     if config.earlyStop:
         callbacks.append(tf.keras.callbacks.EarlyStopping(patience=100, restore_best_weights=True))
 
-    binary_focal_loss = tf.keras.losses.BinaryFocalCrossentropy(
-        apply_class_balancing=True,
-        alpha = class_weights[1],
-        gamma = 2
-    )
+    if version.parse(tf.__version__) >= version.parse('2.10'):
+        binary_focal_loss = tf.keras.losses.BinaryFocalCrossentropy(
+            apply_class_balancing=True,
+            alpha = class_weights[1],
+            gamma = 2
+        )
+    else:
+        binary_focal_loss = tf.keras.losses.BinaryFocalCrossentropy()
+
     model.compile(loss = binary_focal_loss,
                 optimizer = tf.keras.optimizers.Adam(learning_rate=config.lr),
-                metrics=["sparse_categorical_accuracy"])
+                metrics=["binary_accuracy"])
 
     history = model.fit(X_train, y_train,
                         validation_data = (X_val, y_val),
