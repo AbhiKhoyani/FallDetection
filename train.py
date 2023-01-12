@@ -14,7 +14,7 @@ from evaluate import evaluate
 
 default_config = SimpleNamespace(
     project_name = 'Fall-Detection',
-    model = 'Transformer',
+    model = 'MLP',
     # mlp_units = [1024,512,256,64,32,16],
     mlp_units = "1024,64,32,16",
     mlp_dropout = 0.3,
@@ -84,7 +84,6 @@ def parse_args():
 
 def train(config):
 
-    print(config.mlp_units, type(config.mlp_units))
     os.environ['WANDB_API_KEY'] = "66eab73e48530bb4c50b2a1b04abaed644303514"
     os.environ['WANDB_ENTITY']= "abhi_khoyani"
 
@@ -117,8 +116,12 @@ def train(config):
     if config.earlyStop:
         callbacks.append(tf.keras.callbacks.EarlyStopping(patience=100, restore_best_weights=True))
 
-
-    model.compile(loss = 'sparse_categorical_crossentropy',
+    binary_focal_loss = tf.keras.losses.BinaryFocalCrossentropy(
+        apply_class_balancing=True,
+        alpha = class_weights[1],
+        gamma = 2
+    )
+    model.compile(loss = binary_focal_loss,
                 optimizer = tf.keras.optimizers.Adam(learning_rate=config.lr),
                 metrics=["sparse_categorical_accuracy"])
 

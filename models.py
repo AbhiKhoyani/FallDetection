@@ -7,7 +7,7 @@ class MLP(tf.keras.Model):
     for i,n in enumerate(units):
       setattr(self, f"dense{i}", tf.keras.layers.Dense(n, activation = 'relu'))
     self.dropout = tf.keras.layers.Dropout(dropout)
-    self.final = tf.keras.layers.Dense(n_classes, activation = 'softmax')
+    self.final = tf.keras.layers.Dense(1, activation = 'sigmoid')
 
   def call(self, inputs, training = False):
     x = inputs
@@ -33,7 +33,7 @@ class CNN(tf.keras.Model):
 
     self.dropout = tf.keras.layers.Dropout(dropout)
     self.globalPool = tf.keras.layers.GlobalAveragePooling1D(data_format = 'channels_first')
-    self.final = tf.keras.layers.Dense(n_classes, activation = 'softmax')
+    self.final = tf.keras.layers.Dense(1, activation = 'sigmoid')
 
   def call(self, inputs, training = False):
     x = tf.expand_dims(inputs, -1)
@@ -99,7 +99,7 @@ class Transformer(tf.keras.Model):
     self.mlp_dropout = tf.keras.layers.Dropout(mlp_dropout)
     for i,n in enumerate(self.units):
       setattr(self, f'dense{i}', tf.keras.layers.Dense(i, activation = 'relu'))
-    self.final = tf.keras.layers.Dense(n_classes, activation = 'softmax')
+    self.final = tf.keras.layers.Dense(1, activation = 'sigmoid')
 
   def call(self, inputs, training = False):
     x = tf.expand_dims(inputs, -1)
