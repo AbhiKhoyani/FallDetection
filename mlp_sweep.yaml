@@ -21,12 +21,15 @@ early_terminate:
 parameters:
   project_name:
     value: *project
+  model: 
+    value: 'MLP'
+
   lr:
     distribution: log_uniform_values
     min: 0.00005
     max: 0.002
   epochs:
-    value: 50
+    value: 200
   # ff_dim:
   #   distribution: int_uniform
   #   min: 1
@@ -53,24 +56,20 @@ parameters:
     max: 0.6
   mlp_units:
     values:
-      - [1024,512,256,64,32,16]
-      - [1024,512,64,16]
-      - [1024,256,32]
-      - [2048,1024,512,256,64,32,16]
-      - [2048,512,256,32,16]
+      - "1024,512,256,64,32,16"
+      - "1024,512,64,16"
+      - "1024,256,32"
+      - "2048,1024,512,256,64,32,16"
+      - "2048,512,256,32,16"
   # num_transformer_blocks:
   #   distribution: int_uniform
   #   min: 1
   #   max: 4
   ms:
-    distribution: categorical
-    values:
-      - "true"
+    value:
       - "false"
   smote:
-    distribution: categorical
-    values:
-      - "true"
+    value:
       - "false"
   # earlyStop:
   #   distribution: categorical

@@ -9,7 +9,7 @@ def evaluate(model, X, y, labels = [0,1]):
 
     y_prob = model.predict(X)
     y_pred = np.where(y_prob < 0.5, 0, 1)
-    y_prob = np.vstack([y_prob[:,0], 1 - y_prob[:,0]]).T
+    y_prob = np.vstack([1 - y_prob[:,0], y_prob[:,0]]).T
     assert y_pred.shape[1] == 1, "Model predication shape shall be (batch_size, 1)."
     for i,j in zip(metric_name, metrics):
         wandb.summary[i] = j(y, y_pred)    
