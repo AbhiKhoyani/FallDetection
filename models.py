@@ -4,16 +4,20 @@ class MLP(tf.keras.Model):
   def __init__(self, units = [1024,512,256,64,32,16], dropout=0, n_classes = 2): 
     super().__init__()
     self.num_layers = len(units)
+    self.batchNorm = tf.keras.layers.BatchNormalization()
     for i,n in enumerate(units):
       setattr(self, f"dense{i}", tf.keras.layers.Dense(n, activation = 'relu'))
+      setattr(self, f'batchNorm{i}', tf.keras.layers.BatchNormalization())
     self.dropout = tf.keras.layers.Dropout(dropout)
     self.final = tf.keras.layers.Dense(1, activation = 'sigmoid')
 
   def call(self, inputs, training = False):
     x = inputs
-    
+    x = self.batchNorm(x)
     for i in range(self.num_layers):
         x = getattr(self, f'dense{i}')(x)
+        x = getattr(self, f'batchNorm{i}')(x)
+
         if training:
             x = self.dropout(x)
     return self.final(x)
@@ -99,6 +103,7 @@ class Transformer(tf.keras.Model):
     self.mlp_dropout = tf.keras.layers.Dropout(mlp_dropout)
     for i,n in enumerate(self.units):
       setattr(self, f'dense{i}', tf.keras.layers.Dense(i, activation = 'relu'))
+      
     self.final = tf.keras.layers.Dense(1, activation = 'sigmoid')
 
   def call(self, inputs, training = False):

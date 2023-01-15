@@ -110,23 +110,23 @@ def train(config):
         print('Loading MLP model.')
         model = MLP(config.mlp_units, config.mlp_dropout)
 
-    updateLr = tf.keras.callbacks.ReduceLROnPlateau(monitor = 'val_loss', factor = 0.001, patience = 25,
+    updateLr = tf.keras.callbacks.ReduceLROnPlateau(monitor = 'val_loss', factor = 0.9, patience = 25,
                                                     verbose = 1, min_delta = 0.001, min_lr = 1e-6 )
     callbacks = [WandbCallback(save_model = False), updateLr, ]
 
     if config.earlyStop:
         callbacks.append(tf.keras.callbacks.EarlyStopping(patience=100, restore_best_weights=True))
 
-    if version.parse(tf.__version__) >= version.parse('2.10'):
-        binary_focal_loss = tf.keras.losses.BinaryFocalCrossentropy(
-            apply_class_balancing=True,
-            alpha = class_weights[1],
-            gamma = 2
-        )
-    else:
-        binary_focal_loss = tf.keras.losses.BinaryFocalCrossentropy()
+    # if version.parse(tf.__version__) >= version.parse('2.10'):
+    #     binary_focal_loss = tf.keras.losses.BinaryFocalCrossentropy(
+    #         apply_class_balancing=True,
+    #         alpha = class_weights[1],
+    #         gamma = 2
+    #     )
+    # else:
+    #     binary_focal_loss = tf.keras.losses.BinaryFocalCrossentropy()
 
-    model.compile(loss = binary_focal_loss,
+    model.compile(loss = 'binary_crossentropy',
                 optimizer = tf.keras.optimizers.Adam(learning_rate=config.lr),
                 metrics=["binary_accuracy"])
 
