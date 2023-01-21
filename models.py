@@ -96,24 +96,31 @@ class Transformer(tf.keras.Model):
     self.units = mlp_units
     self.num_mlp = len(mlp_units)
 
+    self.batchNorm = tf.keras.layers.BatchNormalization()
     for i in range(num_transformer_blocks):
       setattr(self, f'txEnc{i}', Transformer_Head(self.d_model, self.head_size, self.num_heads, self.ff_dim, dropout))
-    
+      setattr(self, f'batchNorm{i}', tf.keras.layers.BatchNormalization())
+
     self.globalPool = tf.keras.layers.GlobalAveragePooling1D(data_format="channels_first")
     self.mlp_dropout = tf.keras.layers.Dropout(mlp_dropout)
     for i,n in enumerate(self.units):
       setattr(self, f'dense{i}', tf.keras.layers.Dense(i, activation = 'relu'))
-      
+      setattr(self, f'denseNorm{i}', tf.keras.layers.BatchNormalization())
+
     self.final = tf.keras.layers.Dense(1, activation = 'sigmoid')
 
   def call(self, inputs, training = False):
     x = tf.expand_dims(inputs, -1)
+    x = self.batchNorm(x)
     for i in range(self.num_transformer_blocks):
         x = getattr(self, f'txEnc{i}')(x)
-  
+        x = getattr(self, f'batchNorm{i}')(x)
+
     x = self.globalPool(x)
     for i in range(self.num_mlp):
         x = getattr(self, f'dense{i}')(x)
+        x = getattr(self, f'denseNorm{i}')(x)
+
         if training:
           x = self.mlp_dropout(x)
     return self.final(x)

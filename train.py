@@ -24,11 +24,11 @@ default_config = SimpleNamespace(
     cnn_strides = [1,1,1],
     cnn_dropout = 0.3,
     cnn_pooling = True,
-    tx_headSize = 256,
+    tx_headSize = 128,
     tx_noHeads = 4,
     tx_ffDims = 2,
     tx_blocks = 2,
-    tx_mlp = [64],
+    tx_mlp = "64",
     tx_dropout = 0,
     tx_mlp_dropout = 0.2,
     batch_size = 16,
@@ -69,7 +69,7 @@ def parse_args():
     argparser.add_argument('--tx_noHeads', type=int, default = default_config.tx_noHeads, help="No. of heads in Tx MultiHeadAttention layer")
     argparser.add_argument('--tx_ffDims', type=int, default = default_config.tx_ffDims, help="No. of filters in Tx Conv1D layer")
     argparser.add_argument('--tx_blocks', type=int, default = default_config.tx_blocks, help="No. of Tx block ")
-    argparser.add_argument('--tx_mlp', type=list, default = default_config.tx_mlp, help="No. of MLP units/layers in Tx after Tx head:[1,2,3,4]")
+    argparser.add_argument('--tx_mlp', type=parse_list, default = default_config.tx_mlp, help="No. of MLP units/layers in Tx after Tx head:[1,2,3,4]")
     argparser.add_argument('--tx_dropout', type=int, default = default_config.tx_dropout, help="Dropout rate in Tx head")
     argparser.add_argument('--tx_mlp_dropout', type=int, default = default_config.tx_mlp_dropout, help="Dropout rate in Tx MLP layers")
     
