@@ -85,8 +85,8 @@ def parse_args():
 
 def train(config):
 
-    os.environ['WANDB_API_KEY'] = "66eab73e48530bb4c50b2a1b04abaed644303514"
-    os.environ['WANDB_ENTITY']= "abhi_khoyani"
+    os.environ['WANDB_API_KEY'] = ""
+    os.environ['WANDB_ENTITY']= ""
 
     run = wandb.init(project = config.project_name, job_type='training', config = config)
     reproducibility()
